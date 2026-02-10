@@ -427,7 +427,8 @@ vector<OpenFileInfo> TarFileSystem::Glob(const string &path, FileOpener *opener)
 	}
 
 	// Given the path to the tar file, open it
-	auto &fs = FileSystem::GetFileSystem(*context);;
+	auto &fs = FileSystem::GetFileSystem(*context);
+	;
 
 	auto archive_handle = fs.OpenFile(tar_path, FileFlags::FILE_FLAGS_READ);
 	if (!archive_handle) {
