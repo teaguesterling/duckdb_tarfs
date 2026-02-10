@@ -11,8 +11,8 @@ class TarFileHandle final : public FileHandle {
 public:
   TarFileHandle(FileSystem &file_system, const string &path, unique_ptr<FileHandle> inner_handle_p,
                 idx_t start_offset_p, idx_t end_offset_p)
-      : FileHandle(file_system, path), inner_handle(std::move(inner_handle_p)), start_offset(start_offset_p),
-        end_offset(end_offset_p) {
+      : FileHandle(file_system, path, FileOpenFlags::FILE_FLAGS_READ), inner_handle(std::move(inner_handle_p)),
+        start_offset(start_offset_p), end_offset(end_offset_p) {
   }
 
   void Close() override;
@@ -28,7 +28,7 @@ public:
   explicit TarFileSystem() : FileSystem() { //parent_file_system(parent_p) {
   }
 
-  time_t GetLastModifiedTime(FileHandle &handle) override;
+  timestamp_t GetLastModifiedTime(FileHandle &handle) override;
   FileType GetFileType(FileHandle &handle) override;
   int64_t Read(FileHandle &handle, void *buffer, int64_t nr_bytes) override;
   int64_t GetFileSize(FileHandle &handle) override;
@@ -38,7 +38,7 @@ public:
   std::string GetName() const override {
     return "TarFileSystem";
   }
-  vector<string> Glob(const string &path, FileOpener *opener) override;
+  vector<OpenFileInfo> Glob(const string &path, FileOpener *opener) override;
 
   bool CanHandleFile(const string &fpath) override;
   bool OnDiskFile(FileHandle &handle) override;
