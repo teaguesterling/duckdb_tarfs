@@ -7,6 +7,11 @@
 #include "duckdb/storage/object_cache.hpp"
 #include "duckdb/function/scalar/string_common.hpp"
 
+// Detect DuckDB v1.5+ via a header that only exists in v1.5
+#if __has_include("duckdb/common/column_index_map.hpp")
+#define DUCKDB_V15
+#endif
+
 namespace duckdb {
 
 //------------------------------------------------------------------------------
@@ -37,6 +42,12 @@ public:
 	string GetObjectType() override {
 		return ObjectType();
 	}
+
+#ifdef DUCKDB_V15
+	optional_idx GetEstimatedCacheMemory() const override {
+		return optional_idx();
+	}
+#endif
 };
 
 static shared_ptr<TarArchiveFileMetadataCache> TryGetCachedArchiveMetadata(optional_ptr<FileOpener> opener,
